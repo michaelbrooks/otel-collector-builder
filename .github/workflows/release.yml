@@ -32,7 +32,7 @@ jobs:
       - uses: danielr1996/envsubst-action@1.0.0
         with:
           input: manifest.yaml.tpl
-          output: dist/manifest.yaml
+          output: manifest.yaml
 
       - name: Install OpenTelemetry Collector Builder
         run: |
@@ -44,7 +44,7 @@ jobs:
           GOOS: linux
           GOARCH: amd64
         run: |
-          builder --config=dist/manifest.yaml
+          builder --config=manifest.yaml
           mkdir -p dist/amd64
           mv dist/otelcol dist/amd64/otelcol-${{ steps.version.outputs.version }}-linux-amd64
 
@@ -54,7 +54,7 @@ jobs:
           GOOS: linux
           GOARCH: arm64
         run: |
-          builder --config=dist/manifest.yaml
+          builder --config=manifest.yaml
           mkdir -p dist/arm64
           mv dist/otelcol dist/arm64/otelcol-${{ steps.version.outputs.version }}-linux-arm64
 
