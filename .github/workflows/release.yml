@@ -29,6 +29,11 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Using version: $VERSION"
 
+      - uses: danielr1996/envsubst-action@1.0.0
+        with:
+          input: manifest.yaml.tpl
+          output: dist/manifest.yaml
+
       - name: Install OpenTelemetry Collector Builder
         run: |
           go install go.opentelemetry.io/collector/cmd/builder@v0.129.0
@@ -39,9 +44,9 @@ jobs:
           GOOS: linux
           GOARCH: amd64
         run: |
-          builder --config=manifest.yaml
+          builder --config=dist/manifest.yaml
           mkdir -p dist/amd64
-          mv dist/otelcol-custom dist/amd64/otelcol-custom-${{ steps.version.outputs.version }}-linux-amd64
+          mv dist/otelcol dist/amd64/otelcol-${{ steps.version.outputs.version }}-linux-amd64
 
       # Build for arm64
       - name: Build for arm64
@@ -49,9 +54,9 @@ jobs:
           GOOS: linux
           GOARCH: arm64
         run: |
-          builder --config=manifest.yaml
+          builder --config=dist/manifest.yaml
           mkdir -p dist/arm64
-          mv dist/otelcol-custom dist/arm64/otelcol-custom-${{ steps.version.outputs.version }}-linux-arm64
+          mv dist/otelcol dist/arm64/otelcol-${{ steps.version.outputs.version }}-linux-arm64
 
       # Set up Docker Buildx for multi-arch builds
       - name: Set up Docker Buildx
@@ -65,52 +70,46 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata for Docker
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/otelcol-custom
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
+      # # Extract metadata for Docker
+      # - name: Extract metadata for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: ghcr.io/${{ github.repository_owner }}/otelcol
+      #     tags: |
+      #       type=semver,pattern={{version}}
+      #       type=semver,pattern={{major}}.{{minor}}
+      #       type=semver,pattern={{major}}
+      #       type=sha
 
-      # Build and push Docker image
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            VERSION=${{ steps.version.outputs.version }}
+      # # Build and push Docker image
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     file: ./Dockerfile
+      #     push: true
+      #     platforms: linux/amd64,linux/arm64
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     build-args: |
+      #       VERSION=${{ steps.version.outputs.version }}
 
       # Create GitHub Release
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/amd64/otelcol-custom-${{ steps.version.outputs.version }}-linux-amd64
-            dist/arm64/otelcol-custom-${{ steps.version.outputs.version }}-linux-arm64
+            dist/amd64/otelcol-${{ steps.version.outputs.version }}-linux-amd64
+            dist/arm64/otelcol-${{ steps.version.outputs.version }}-linux-arm64
           draft: false
           prerelease: false
           body: |
             ## OpenTelemetry Collector Custom Distribution v${{ steps.version.outputs.version }}
             
             ### Binaries
-            - [otelcol-custom-${{ steps.version.outputs.version }}-linux-amd64](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/otelcol-custom-${{ steps.version.outputs.version }}-linux-amd64)
-            - [otelcol-custom-${{ steps.version.outputs.version }}-linux-arm64](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/otelcol-custom-${{ steps.version.outputs.version }}-linux-arm64)
-            
-            ### Docker Images
-            
-            ```
-            docker pull ghcr.io/${{ github.repository_owner }}/otelcol-custom:${{ steps.version.outputs.version }}
-            ```
+            - [otelcol-${{ steps.version.outputs.version }}-linux-amd64](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/otelcol-${{ steps.version.outputs.version }}-linux-amd64)
+            - [otelcol-${{ steps.version.outputs.version }}-linux-arm64](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/otelcol-${{ steps.version.outputs.version }}-linux-arm64)
             
             Available architectures: linux/amd64, linux/arm64
         env:
