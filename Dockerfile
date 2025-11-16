@@ -15,3 +15,6 @@ RUN chown builder:builder /install_build_deps.sh
 # Install dependencies as the builder user
 USER builder
 RUN bash /install_build_deps.sh
+
+# Prefetch a bunch of stuff
+RUN builder

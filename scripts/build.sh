@@ -10,7 +10,7 @@ OTEL_PACKAGE_VERSION=${OTEL_PACKAGE_VERSION:?Error: OTEL_PACKAGE_VERSION must be
 echo "Building package version ${VERSION} from OTEL ${OTEL_PACKAGE_VERSION}"
 
 # Avoid issues with docker mounting git directory as the wrong user
-git config --global --add safe.directory $(pwd)
+# git config --global --add safe.directory $(pwd)
 
 # Generate manifest.yaml from template with variable substitution
 echo "Generating manifest.yaml from template..."
