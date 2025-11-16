@@ -16,6 +16,7 @@ processors:
 
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver ${OTEL_PACKAGE_VERSION}
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver ${OTEL_PACKAGE_VERSION} # 4MB
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver ${OTEL_PACKAGE_VERSION} # 1MB
   # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver ${OTEL_PACKAGE_VERSION} # 79MB
   # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/journaldreceiver ${OTEL_PACKAGE_VERSION} # 2MB
