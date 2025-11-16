@@ -16,11 +16,7 @@ The custom collector includes:
 To build the collector locally:
 
 ```bash
-# Install the OpenTelemetry Collector Builder
-go install go.opentelemetry.io/collector/cmd/builder@latest
-
-# Build the collector
-builder --config=manifest.yaml
+./scripts/build_in_docker.sh
 ```
 
 The binaries will be available in the `./dist` directory.

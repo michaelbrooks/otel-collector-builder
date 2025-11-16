@@ -1,15 +1,17 @@
-FROM alpine:3.22
+# Simple build image for local development
+FROM golang:1.24
 
-ARG TARGETARCH
-ARG VERSION
+ARG OTEL_BUILDER_VERSION
+ARG UID=1000
+ARG GID=1000
 
-# Copy the binary with version in the filename
-COPY dist/${TARGETARCH}/otelcol-${VERSION}-linux-${TARGETARCH} /otelcol
-COPY config.yaml /etc/otelcol/config.yaml
+# Create a non-root user with the same UID/GID as the host user
+RUN groupadd -g ${GID} builder && \
+    useradd -u ${UID} -g ${GID} -m -s /bin/bash builder
 
-RUN chmod +x /otelcol && \
-    apk --no-cache add ca-certificates
+COPY scripts/install_build_deps.sh /
+RUN chown builder:builder /install_build_deps.sh
 
-EXPOSE 4317 4318 55679
-ENTRYPOINT ["/otelcol"]
-CMD ["--config", "/etc/otelcol/config.yaml"]
+# Install dependencies as the builder user
+USER builder
+RUN bash /install_build_deps.sh

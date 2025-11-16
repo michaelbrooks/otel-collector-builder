@@ -5,24 +5,25 @@ dist:
   version: ${VERSION}
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.129.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.129.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter ${OTEL_PACKAGE_VERSION}
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter ${OTEL_PACKAGE_VERSION}
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.129.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.129.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.129.0 # 1MB
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.129.0 # 11MB
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor ${OTEL_PACKAGE_VERSION}
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor ${OTEL_PACKAGE_VERSION}
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor ${OTEL_PACKAGE_VERSION} # 1MB
+  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor ${OTEL_PACKAGE_VERSION} # 11MB
 
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.129.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.129.0 # 1MB
-  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.129.0 # 79MB
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/journaldreceiver v0.129.0 # 2MB
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver ${OTEL_PACKAGE_VERSION}
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver ${OTEL_PACKAGE_VERSION} # 1MB
+  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver ${OTEL_PACKAGE_VERSION} # 79MB
+  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/journaldreceiver ${OTEL_PACKAGE_VERSION} # 2MB
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.18.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.18.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.18.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.18.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.18.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.45.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.45.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.45.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.45.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.45.0
+  

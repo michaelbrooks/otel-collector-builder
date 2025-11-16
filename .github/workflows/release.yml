@@ -19,44 +19,34 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: '1.24'
           cache: true
+
+      - name: Load versions from versions.env
+        id: versions
+        run: |
+          source versions.env
+          echo "otel_builder_version=$OTEL_BUILDER_VERSION" >> $GITHUB_OUTPUT
+          echo "otel_package_version=$OTEL_PACKAGE_VERSION" >> $GITHUB_OUTPUT
 
       - name: Extract version from tag
         id: version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=${GITHUB_REF#refs/tags/}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Using version: $VERSION"
 
-      - uses: danielr1996/envsubst-action@1.0.0
-        with:
-          input: manifest.yaml.tpl
-          output: manifest.yaml
-
-      - name: Install OpenTelemetry Collector Builder
-        run: |
-          go install go.opentelemetry.io/collector/cmd/builder@v0.139.0
-
-      # Build for amd64
-      - name: Build for amd64
+      - name: Install build dependencies
         env:
-          GOOS: linux
-          GOARCH: amd64
-        run: |
-          builder --config=manifest.yaml
-          mkdir -p dist/amd64
-          mv dist/otelcol dist/amd64/otelcol-${{ steps.version.outputs.version }}-linux-amd64
+          OTEL_BUILDER_VERSION: ${{ steps.versions.outputs.otel_builder_version }}
+        run: bash scripts/install_build_deps.sh
 
-      # Build for arm64
-      - name: Build for arm64
+      - name: Build collectors
         env:
-          GOOS: linux
-          GOARCH: arm64
-        run: |
-          builder --config=manifest.yaml
-          mkdir -p dist/arm64
-          mv dist/otelcol dist/arm64/otelcol-${{ steps.version.outputs.version }}-linux-arm64
+          VERSION: ${{ steps.version.outputs.version }}
+          OTEL_PACKAGE_VERSION: ${{ steps.versions.outputs.otel_package_version }}
+          OTEL_BUILDER_VERSION: ${{ steps.versions.outputs.otel_builder_version }}
+        run: bash scripts/build.sh
 
       # # Set up Docker Buildx for multi-arch builds
       # - name: Set up Docker Buildx
