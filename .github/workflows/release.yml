@@ -48,43 +48,6 @@ jobs:
           OTEL_BUILDER_VERSION: ${{ steps.versions.outputs.otel_builder_version }}
         run: bash scripts/build.sh
 
-      # # Set up Docker Buildx for multi-arch builds
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
-
-      # # Login to GitHub Container Registry
-      # - name: Login to GitHub Container Registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-
-      # # Extract metadata for Docker
-      # - name: Extract metadata for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@v5
-      #   with:
-      #     images: ghcr.io/${{ github.repository_owner }}/otelcol
-      #     tags: |
-      #       type=semver,pattern={{version}}
-      #       type=semver,pattern={{major}}.{{minor}}
-      #       type=semver,pattern={{major}}
-      #       type=sha
-
-      # # Build and push Docker image
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     platforms: linux/amd64,linux/arm64
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     build-args: |
-      #       VERSION=${{ steps.version.outputs.version }}
-
       # Create GitHub Release
       - name: Create Release
         uses: softprops/action-gh-release@v1
